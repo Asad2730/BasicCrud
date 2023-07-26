@@ -1,5 +1,5 @@
 const { app, BrowserWindow,ipcMain } = require('electron')
-const { login } = require('./api_handling/handleApi')
+const { login,create } = require('./api_handling/handleApi')
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -27,7 +27,20 @@ const createWindow = () => {
   ipcMain.on('login-api', async (event, data) => {
     const { email, password } = data;  
     try {
-      await login(email, password);
+      const {data} = await login(email, password);
+     
+      event.reply('login-success',data);
+    } catch (error) {
+      console.error('Error during login:', error.message);
+       event.reply('login-error', error.message);
+    }
+  });
+
+
+  ipcMain.on('create-api', async (event, data) => {
+    const { email, password,type,name } = data;  
+    try {
+      await create(email,password,name,type);
     } catch (error) {
       console.error('Error during login:', error.message);
     }
