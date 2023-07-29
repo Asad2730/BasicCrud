@@ -8,10 +8,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var user model.User
+func GetAll(ctx *gin.Context) {
+
+	users := []model.User{}
+	err := db.Db.Find(&users).Error
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	ctx.JSON(200, users)
+
+}
+
+func GetSingle(ctx *gin.Context) {
+
+	var user model.User
+	id := ctx.Param("id")
+	err := db.Db.First(&user, "ID = ?", id).Error
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
+	ctx.JSON(200, user)
+
+}
 
 func Create(ctx *gin.Context) {
 
+	var user model.User
 	ctx.BindJSON(&user)
 
 	err := db.Db.Create(&user).Error
@@ -26,6 +51,7 @@ func Create(ctx *gin.Context) {
 
 func Login(ctx *gin.Context) {
 
+	var user model.User
 	ctx.BindJSON(&user)
 	email := user.Email
 	password := user.Password
@@ -40,7 +66,8 @@ func Login(ctx *gin.Context) {
 
 func Delete(ctx *gin.Context) {
 
-	id := ctx.Query("id")
+	var user model.User
+	id := ctx.Param("id")
 
 	err := db.Db.Delete(&user, id).Error
 
@@ -53,13 +80,16 @@ func Delete(ctx *gin.Context) {
 
 func Update(ctx *gin.Context) {
 
-	id := ctx.Query("id")
+	var user model.User
 	ctx.BindJSON(&user)
-	err := db.Db.Update(id, &user).Error
+
+	id := ctx.Param("id")
+
+	err := db.Db.Where("id = ?", id).Updates(&user).Error
 
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, err.Error())
 	}
 
-	ctx.JSON(200, user)
+	ctx.JSON(200, "Updated Successfully!")
 }

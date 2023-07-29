@@ -1,8 +1,8 @@
 package main
 
 import (
-	"employee/controler"
 	"employee/db"
+	"employee/routes"
 	"fmt"
 	"log"
 
@@ -16,8 +16,7 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.POST("/create", controler.Create)
-	r.POST("/login", controler.Login)
+	routes.Routes(r)
 
 	err := r.Run()
 	if err != nil {
