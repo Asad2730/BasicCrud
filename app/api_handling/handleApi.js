@@ -1,6 +1,6 @@
 const axios = require('axios');
 
- async function login (email,password) {
+  const login = async (email,password) => {
     try {
         let data = {email,password}
         let response = await axios.post('http://localhost:8080/login',data)
@@ -13,10 +13,10 @@ const axios = require('axios');
     }
 
 }
-
-async function create (email,password,name,type) {
+  const  create = async (email,password,name,type)=> {
     try {
         let data = {email,password,name,type}
+      
         let response = await axios.post('http://localhost:8080/create',data)
         console.log(`Response is ${JSON.stringify(response.data)}`)
     }    

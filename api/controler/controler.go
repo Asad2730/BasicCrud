@@ -37,3 +37,29 @@ func Login(ctx *gin.Context) {
 
 	ctx.JSON(200, user)
 }
+
+func Delete(ctx *gin.Context) {
+
+	id := ctx.Query("id")
+
+	err := db.Db.Delete(&user, id).Error
+
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+	}
+
+	ctx.JSON(200, "Deleted Successfully!")
+}
+
+func Update(ctx *gin.Context) {
+
+	id := ctx.Query("id")
+	ctx.BindJSON(&user)
+	err := db.Db.Update(id, &user).Error
+
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+	}
+
+	ctx.JSON(200, user)
+}
